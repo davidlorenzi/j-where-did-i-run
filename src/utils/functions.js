@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const { REACT_APP_CLIENT_ID, REACT_APP_CLIENT_SECRET } = process.env;
+const { REACT_APP_CLIENT_ID, REACT_APP_CLIENT_SECRET, GOOGLE_API_KEY } = process.env;
 
 export const getParamValues = (url) => {
     return url
@@ -29,13 +29,42 @@ export const testAuthGetter = async (authTok) => {
 };
 
 export const getUserData = async (userID, accessToken) => {
-    try {
-        const response = await axios.get(
-            `https://www.strava.com/api/v3/athletes/${userID}/stats`,
-            { headers: { Authorization: `Bearer ${accessToken}` } }
-        );
-        return response;
-    } catch (error) {
-        console.log(error);
-    }
+  try {
+    const response = await axios.get(
+      `https://www.strava.com/api/v3/athletes/${userID}/stats`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    console.log('getUserData() > response: ', response);
+    return response;
+  } catch (error) {
+    console.log('getUserData() > error:', error);
+  }
+};
+
+export const getUserActivities = async (userID, accessToken, page) => {
+  try {
+    // "https://www.strava.com/api/v3/athlete/activities?before=&after=&page=&per_page=" "Authorization: Bearer [[token]]"
+    const response = await axios.get(
+      `https://www.strava.com/api/v3/athlete/activities?page=${page}`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    console.log('getUserActivities() > response: ', response);
+    return response;
+  } catch (error) {
+    console.log('getUserActivities() > error:', error);
+  }
+};
+
+export const reverseGeocode = async (latitude, longitude) => {
+  try {
+    // https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
+    console.log('reverseGeocode() > GOOGLE_API_KEY: ', GOOGLE_API_KEY);
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?language=it&latlng=${latitude},${longitude}&key=AIzaSyAqutiO7rwSjM8VuhuKZE7JaJi8JPQhfs0`
+    );
+    console.log('reverseGeocode() > response: ', response);
+    return response;
+  } catch (error) {
+    console.log('reverseGeocode() > error:', error);
+  }
 };
