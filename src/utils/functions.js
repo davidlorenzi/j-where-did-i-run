@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const { REACT_APP_CLIENT_ID, REACT_APP_CLIENT_SECRET, GOOGLE_API_KEY } = process.env;
+const { REACT_APP_CLIENT_ID, REACT_APP_CLIENT_SECRET, REACT_APP_GOOGLE_API_KEY } = process.env;
 
 export const getParamValues = (url) => {
     return url
@@ -13,19 +13,17 @@ export const getParamValues = (url) => {
         }, {});
 };
 
-export const cleanUpAuthToken = (str) => {
-    return str.split("&")[1].slice(5);
-};
+export const cleanUpAuthToken = (str) => { return str.split("&")[1].slice(5); };
 
 export const testAuthGetter = async (authTok) => {
-    try {
-        const response = await axios.post(
-            `https://www.strava.com/api/v3/oauth/token?client_id=${REACT_APP_CLIENT_ID}&client_secret=${REACT_APP_CLIENT_SECRET}&code=${authTok}&grant_type=authorization_code`
-        );
-        return response.data;
-    } catch (error) {
-        console.log(error);
-    }
+  try {
+    const response = await axios.post(
+      `https://www.strava.com/api/v3/oauth/token?client_id=${REACT_APP_CLIENT_ID}&client_secret=${REACT_APP_CLIENT_SECRET}&code=${authTok}&grant_type=authorization_code`
+    );
+    return response.data;
+  } catch (error) {
+    console.log('testAuthGetter() > error: ', error);
+  }
 };
 
 export const getUserData = async (userID, accessToken) => {
@@ -48,7 +46,6 @@ export const getUserActivities = async (userID, accessToken, page) => {
       `https://www.strava.com/api/v3/athlete/activities?page=${page}`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
-    console.log('getUserActivities() > response: ', response);
     return response;
   } catch (error) {
     console.log('getUserActivities() > error:', error);
@@ -58,11 +55,9 @@ export const getUserActivities = async (userID, accessToken, page) => {
 export const reverseGeocode = async (latitude, longitude) => {
   try {
     // https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
-    console.log('reverseGeocode() > GOOGLE_API_KEY: ', GOOGLE_API_KEY);
     const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?language=it&latlng=${latitude},${longitude}&key=AIzaSyAqutiO7rwSjM8VuhuKZE7JaJi8JPQhfs0`
+      `https://maps.googleapis.com/maps/api/geocode/json?language=it&latlng=${latitude},${longitude}&key=${REACT_APP_GOOGLE_API_KEY}`
     );
-    console.log('reverseGeocode() > response: ', response);
     return response;
   } catch (error) {
     console.log('reverseGeocode() > error:', error);
